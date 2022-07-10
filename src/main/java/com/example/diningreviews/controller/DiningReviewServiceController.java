@@ -35,6 +35,7 @@ public class DiningReviewServiceController {
         }
     }
 
+    //update user profile
     @PutMapping("update-user")
     public String updateUser(@RequestBody Users user) {
         Optional<Users> usersOptional = userRepository.findUsersByName(user.getName());
@@ -52,6 +53,18 @@ public class DiningReviewServiceController {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    // find user by name
+    @GetMapping("/user")
+    public Optional<Users> findUserByName(@RequestParam String username) {
+        Optional<Users> usersOptional = userRepository.findUsersByName(username);
+        if(usersOptional.isPresent()) {
+            return userRepository.findUsersByName(username);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }
