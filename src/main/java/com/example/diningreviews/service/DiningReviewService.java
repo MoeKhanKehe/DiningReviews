@@ -1,7 +1,7 @@
 package com.example.diningreviews.service;
 
-import com.example.diningreviews.domain.Users;
-import com.example.diningreviews.repositories.UserRepository;
+import com.example.diningreviews.domain.Reviewer;
+import com.example.diningreviews.repositories.ReviewerRepository;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 @Builder
 public class DiningReviewService {
 
-    private UserRepository userRepository;
-    private Users users;
+    private ReviewerRepository reviewerRepository;
+    private Reviewer reviewer;
     //allow user to create a user by unique username
-    public DiningReviewService(UserRepository userRepository, Users users) {
-        this.userRepository = userRepository;
-        this.users = users;
+    public DiningReviewService(ReviewerRepository reviewerRepository, Reviewer reviewer) {
+        this.reviewerRepository = reviewerRepository;
+        this.reviewer = reviewer;
     }
 
-    public void createUser(Users users) {
-        userRepository.save(users);
+    public void createUser(Reviewer reviewer) {
+        reviewerRepository.save(reviewer);
         System.out.print("Successfully added the user");
     }
 

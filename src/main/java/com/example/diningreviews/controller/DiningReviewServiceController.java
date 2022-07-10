@@ -1,7 +1,7 @@
 package com.example.diningreviews.controller;
 
-import com.example.diningreviews.domain.Users;
-import com.example.diningreviews.repositories.UserRepository;
+import com.example.diningreviews.domain.Reviewer;
+import com.example.diningreviews.repositories.ReviewerRepository;
 import com.example.diningreviews.service.DiningReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class DiningReviewServiceController {
 
     private DiningReviewService diningReviewService;
-    private UserRepository userRepository;
+    private ReviewerRepository reviewerRepository;
 
     @GetMapping("/hello")
     public String hello() {
@@ -27,29 +27,29 @@ public class DiningReviewServiceController {
 
     //create a user by unique username
     @PostMapping("/create-user")
-    public Users createUser(@RequestBody Users username) {
-        var usersOptional = this.userRepository.findUsersByName(username.getName());
+    public Reviewer createUser(@RequestBody Reviewer username) {
+        var usersOptional = this.reviewerRepository.findUsersByName(username.getName());
         if(usersOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }else {
-            return this.userRepository.save(username);
+            return this.reviewerRepository.save(username);
         }
     }
 
     //update user profile
     @PutMapping("update-user")
-    public String updateUser(@RequestBody Users user) {
-        Optional<Users> usersOptional = userRepository.findUsersByName(user.getName());
+    public String updateUser(@RequestBody Reviewer reviewer) {
+        Optional<Reviewer> usersOptional = reviewerRepository.findUsersByName(reviewer.getName());
         //exists in the table? - yes = update - no = create/add
         if(usersOptional.isPresent()) {
-            final Users userToUpdate = usersOptional.get();
-            userToUpdate.setCity(user.getCity());
-            userToUpdate.setState(user.getState());
-            userToUpdate.setZipCode(user.getZipCode());
-            userToUpdate.setInterestedInDairyAllergies(user.isInterestedInDairyAllergies());
-            userToUpdate.setInterestedInEggAllergies(user.isInterestedInEggAllergies());
-            userToUpdate.setInterestedInPeanutAllergies(user.isInterestedInPeanutAllergies());
-            userRepository.save(userToUpdate);
+            final Reviewer reviewerToUpdate = usersOptional.get();
+            reviewerToUpdate.setCity(reviewer.getCity());
+            reviewerToUpdate.setState(reviewer.getState());
+            reviewerToUpdate.setZipCode(reviewer.getZipCode());
+            reviewerToUpdate.setInterestedInDairyAllergies(reviewer.isInterestedInDairyAllergies());
+            reviewerToUpdate.setInterestedInEggAllergies(reviewer.isInterestedInEggAllergies());
+            reviewerToUpdate.setInterestedInPeanutAllergies(reviewer.isInterestedInPeanutAllergies());
+            reviewerRepository.save(reviewerToUpdate);
             return "Successfully Updated!";
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -58,10 +58,10 @@ public class DiningReviewServiceController {
 
     // find user by name
     @GetMapping("/user")
-    public Optional<Users> findUserByName(@RequestParam String username) {
-        Optional<Users> usersOptional = userRepository.findUsersByName(username);
+    public Optional<Reviewer> findUserByName(@RequestParam String username) {
+        Optional<Reviewer> usersOptional = reviewerRepository.findUsersByName(username);
         if(usersOptional.isPresent()) {
-            return userRepository.findUsersByName(username);
+            return reviewerRepository.findUsersByName(username);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

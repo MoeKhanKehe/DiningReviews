@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Users extends AbstractPersistable<UUID> {
+public class Reviewer extends AbstractPersistable<UUID> {
 
     private String name;
 
