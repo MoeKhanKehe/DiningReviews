@@ -23,6 +23,7 @@ public class DiningReviewServiceController {
         return "Hello world";
     }
 
+    //------------------------------------USER------------------------------------------------//
 
     //create a user by unique username
     @PostMapping("/create-user")
@@ -67,4 +68,35 @@ public class DiningReviewServiceController {
 
     }
 
+    // check if user exists from name when they submit a dining review
+    //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods
+
+
+    //------------------------------------DINING REVIEW---------------------------------------//
+
+
+    //as an admin submit a new dining review
+
+
+
+    //as an admin get a list of all dining reviews
+
+
+
+    //as an admin approve or reject a review
+
+
+
+    // get all approved dining reviews for restaurant when updating restaurant scored
+
+
+    //------------------------------------RESTAURANT------------------------------------------//
+
+    // submit new restaurant | cant create restaurant with same name + zip
+
+
+    //find restaurant by id
+
+
+    //find restaurant by zip and have at least one user-submitted score for allergy | sorted in descending
 }
