@@ -1,22 +1,26 @@
 package com.example.diningreviews.controller;
 
-import com.example.diningreviews.domain.Reviewer;
+import com.example.diningreviews.domain.*;
+import com.example.diningreviews.repositories.DiningReviewRepository;
+import com.example.diningreviews.repositories.RestaurantRepository;
 import com.example.diningreviews.repositories.ReviewerRepository;
-import com.example.diningreviews.service.DiningReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/dining-reviews")
-public class DiningReviewServiceController {
+public class DiningReviewController {
 
-    private DiningReviewService diningReviewService;
     private ReviewerRepository reviewerRepository;
+    private DiningReviewRepository diningReviewRepository;
+    private RestaurantRepository restaurantRepository;
 
     @GetMapping("/hello")
     public String hello() {
@@ -52,50 +56,69 @@ public class DiningReviewServiceController {
             reviewerRepository.save(reviewerToUpdate);
             return "Successfully Updated!";
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist");
         }
     }
 
     // find user by name
-    @GetMapping("/user")
-    public Optional<Reviewer> findUserByName(@RequestParam String username) {
+    @GetMapping("/users/{username}")
+    public Optional<Reviewer> findUserByName(@PathVariable("username") String username) {
         Optional<Reviewer> usersOptional = reviewerRepository.findUsersByName(username);
-        if(usersOptional.isPresent()) {
-            return reviewerRepository.findUsersByName(username);
-        } else {
+        if(usersOptional.isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
 
+        return reviewerRepository.findUsersByName(username);
     }
 
     // check if user exists from name when they submit a dining review
     //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods
+    public boolean doesUserExist(String name) {
+        return reviewerRepository.findUsersByName(name).isPresent();
+    }
 
 
     //------------------------------------DINING REVIEW---------------------------------------//
 
 
-    //as an admin submit a new dining review
-
-
+    //as a user I want to submit a new dining review
+    @PostMapping("/new-review")
+    public DiningReview createDiningReview(@RequestBody DiningReview diningReview) {
+        return diningReviewRepository.save(diningReview);
+    }
 
     //as an admin get a list of all dining reviews
-
-
+    @GetMapping()
+    public List<DiningReview> getAllDiningReviews() {
+        return diningReviewRepository.findAll();
+    }
 
     //as an admin approve or reject a review
-
-
+    public void approveOrDenyReview(DiningReview diningReview, Status status) {
+        diningReview.setStatus(status);
+    }
 
     // get all approved dining reviews for restaurant when updating restaurant scored
+    public List<DiningReview> getAllApprovedReviewsForRestaurant(Restaurant restaurant) {
+        return diningReviewRepository.findByStatusAndRestaurantName(Status.APPROVED, restaurant.getName());
+    }
 
 
     //------------------------------------RESTAURANT------------------------------------------//
 
-    // submit new restaurant | cant create restaurant with same name + zip
+    // submit new restaurant | can't create restaurant with same name + zip
+//    @PostMapping("/new-restaurant")
 
 
     //find restaurant by id
+    @GetMapping("/restaurant/{id}")
+    public Optional<Restaurant> getRestaurantById(@RequestParam UUID id) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
+        if(optionalRestaurant.isPresent()) {
+            return optionalRestaurant;
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     //find restaurant by zip and have at least one user-submitted score for allergy | sorted in descending

@@ -1,18 +1,25 @@
 package com.example.diningreviews.domain;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class DiningReview {
+public class DiningReview extends AbstractPersistable<UUID> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID Id;
+    @Column(name = "REVIEWER")
+    private String reviewer;
+
+    @Column(name = "RESTAURANT_NAME")
+    private String restaurantName;
 
     @Column(name = "PEANUT_SCORE")
     private Integer peanutScore;
